@@ -58,3 +58,56 @@ def buscar_productos(texto):
          "precio": f[3], "stock": f[4], "disponible": bool(f[5])}
         for f in filas
     ]
+
+def actualizar_stock(producto_id, nuevo_stock):
+    if nuevo_stock < 0:
+        raise ValueError("El stock no puede ser negativo")
+
+    conexion = conectar()
+    cursor = conexion.cursor()
+    cursor.execute(
+        "UPDATE productos SET stock = ? WHERE id = ?",
+        (nuevo_stock, producto_id)
+    )
+
+    if cursor.rowcount == 0:
+        conexion.close()
+        raise ValueError(f"El producto con id {producto_id} no existe")
+
+    conexion.commit()
+    conexion.close()
+
+
+def actualizar_disponibilidad(producto_id, disponible):
+    conexion = conectar()
+    cursor = conexion.cursor()
+    cursor.execute(
+        "UPDATE productos SET disponible = ? WHERE id = ?",
+        (disponible, producto_id)
+    )
+
+    if cursor.rowcount == 0:
+        conexion.close()
+        raise ValueError(f"El producto con id {producto_id} no existe")
+
+    conexion.commit()
+    conexion.close()
+
+
+def actualizar_precio(producto_id, nuevo_precio):
+    if nuevo_precio <= 0:
+        raise ValueError("El precio debe ser mayor a 0")
+
+    conexion = conectar()
+    cursor = conexion.cursor()
+    cursor.execute(
+        "UPDATE productos SET precio = ? WHERE id = ?",
+        (nuevo_precio, producto_id)
+    )
+
+    if cursor.rowcount == 0:
+        conexion.close()
+        raise ValueError(f"El producto con id {producto_id} no existe")
+
+    conexion.commit()
+    conexion.close()

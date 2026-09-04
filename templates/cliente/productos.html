@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Productos</title>
+</head>
+<body>
+    <a href="/cliente">← Volver a categorías</a>
+    <h1>Productos</h1>
+
+    {% if productos|length == 0 %}
+        <p>No hay productos en esta categoría todavía.</p>
+    {% endif %}
+
+    <ul>
+        {% for producto in productos %}
+            <li>
+                <strong>{{ producto.nombre }}</strong> - {{ producto.descripcion }}<br>
+                Precio: ${{ "{:,}".format(producto.precio).replace(",", ".") }}<br>
+                {% if producto.disponible and producto.stock > 0 %}
+                    Stock disponible: {{ producto.stock }}
+                {% else %}
+                    <span style="color: red;">No disponible</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
