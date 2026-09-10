@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedidos - Trabajador</title>
+</head>
+<body>
+    <h1>Gestión de pedidos</h1>
+
+    {% for estado, lista in pedidos_por_estado.items() %}
+        <h2>{{ estado|capitalize }} ({{ lista|length }})</h2>
+        {% if lista|length == 0 %}
+            <p><em>Sin pedidos en este estado.</em></p>
+        {% else %}
+            <ul>
+                {% for pedido in lista %}
+                    <li>
+                        Pedido #{{ pedido.id }} - {{ pedido.cliente_nombre }}
+                        ({{ pedido.fecha_creacion }})
+
+                        <form action="/trabajador/pedido/{{ pedido.id }}/estado" method="post" style="display:inline;">
+                            <select name="nuevo_estado">
+                                {% for e in estados %}
+                                    <option value="{{ e }}" {% if e == pedido.estado %}selected{% endif %}>
+                                        {{ e|capitalize }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit">Actualizar</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endfor %}
+</body>
+</html>

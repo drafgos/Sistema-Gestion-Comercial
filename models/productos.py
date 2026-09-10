@@ -1,3 +1,4 @@
+from database import conexion
 from database.conexion import conectar
 
 def crear_productos(nombre, descripcion, precio, stock, disponible, categoria_id):
@@ -26,6 +27,22 @@ def listar_productos_por_categoria(categoria_id):
         for f in filas
     ]
 
+def listar_todos_los_productos():
+    conexion = conectar()
+    cursor = conexion.cursor()
+    cursor.execute('''
+        SELECT p.id, p.nombre, p.descripcion, p.precio, p.stock, p.disponible, c.nombre
+        FROM productos p
+        JOIN categorias c ON c.id = p.categoria_id
+        ORDER BY c.nombre, p.nombre
+    ''')
+    filas = cursor.fetchall()
+    conexion.close()
+    return [
+        {"id": f[0], "nombre": f[1], "descripcion": f[2], "precio": f[3],
+         "stock": f[4], "disponible": bool(f[5]), "categoria_nombre": f[6]}
+        for f in filas
+    ]
 
 def obtener_producto(producto_id):
     conexion = conectar()
@@ -111,3 +128,23 @@ def actualizar_precio(producto_id, nuevo_precio):
 
     conexion.commit()
     conexion.close()
+
+def listar_productos_disponibles():
+    conexion = conectar()
+    cursor = conexion.cursor()
+    cursor.execute('''
+        SELECT p.id, p.nombre, p.descripcion, p.precio, p.stock, c.nombre, p.categoria_id
+        FROM productos p
+        JOIN categorias c ON c.id = p.categoria_id
+        WHERE p.disponible = 1 AND p.stock > 0
+        ORDER BY p.nombre
+    ''')
+    filas = cursor.fetchall()
+    conexion.close()
+    return [
+        {"id": f[0], "nombre": f[1], "descripcion": f[2], "precio": f[3],
+         "stock": f[4], "categoria_nombre": f[5], "categoria_id": f[6]}
+        for f in filas
+    ]
+
+    

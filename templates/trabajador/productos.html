@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Productos - Trabajador</title>
+</head>
+<body>
+    <a href="/trabajador">← Ver pedidos</a>
+    <h1>Gestión de productos</h1>
+
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Disponible</th>
+        </tr>
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.categoria_nombre }}</td>
+            <td>${{ "{:,}".format(producto.precio).replace(",", ".") }}</td>
+            <td>
+                <form action="/trabajador/producto/{{ producto.id }}/stock" method="post" style="display:inline;">
+                    <input type="number" name="nuevo_stock" value="{{ producto.stock }}" min="0" style="width:60px;">
+                    <button type="submit">Guardar</button>
+                </form>
+            </td>
+            <td>
+                <form action="/trabajador/producto/{{ producto.id }}/disponibilidad" method="post" style="display:inline;">
+                    <input type="hidden" name="disponible" value="{{ 0 if producto.disponible else 1 }}">
+                    <button type="submit">
+                        {% if producto.disponible %}Marcar no disponible{% else %}Marcar disponible{% endif %}
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
